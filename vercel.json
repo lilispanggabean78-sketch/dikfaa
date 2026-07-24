@@ -9,16 +9,20 @@
   ],
   "routes": [
     {
-      "src": "/",
+      "src": "^/$",
       "dest": "/index.html"
     },
     {
-      "src": "/login",
+      "src": "^/login/?$",
       "dest": "/login.html"
     },
     {
-      "src": "/chat",
+      "src": "^/chat/?$",
       "dest": "/chat.html"
+    },
+    {
+      "src": "/(.*)\\.html",
+      "dest": "/$1.html"
     },
     {
       "src": "/(.*)",
