@@ -20,7 +20,6 @@
             color: #e5e7eb;
         }
 
-        /* Animated bg */
         body::before {
             content: '';
             position: fixed;
@@ -55,7 +54,6 @@
             border-right: 1px solid rgba(255,255,255,0.02);
         }
 
-        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 320px;
             background: rgba(10,10,20,0.5);
@@ -129,7 +127,6 @@
         }
         .profile-circle-btn span:nth-child(2) { width: 12px; }
 
-        /* Dropdown */
         .profile-dropdown {
             display: none;
             position: absolute;
@@ -182,7 +179,6 @@
         .profile-dropdown .dropdown-item.danger { color: #f87171; }
         .profile-dropdown .dropdown-item.danger:hover { background: rgba(248,113,113,0.06); }
 
-        /* Chat List */
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -235,7 +231,6 @@
         }
         .chat-item.pinned .name::after { content: ' 📌'; font-size: 12px; }
 
-        /* ===== MAIN CHAT ===== */
         .chat-main {
             flex: 1;
             display: flex;
@@ -292,7 +287,6 @@
             color: rgba(255,255,255,0.3);
         }
 
-        /* ===== MESSAGES ===== */
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -342,7 +336,6 @@
         .message.own .msg-text .mention { color: #bfdbfe; }
         .message .msg-time { font-size: 10px; color: rgba(255,255,255,0.12); margin-top: 4px; text-align: right; }
 
-        /* ===== INPUT ===== */
         .chat-input-area {
             padding: 12px 20px;
             background: rgba(10,10,20,0.3);
@@ -432,7 +425,6 @@
 
         .chat-input-area .send-btn:active { transform: scale(0.96); }
 
-        /* ===== LOBBY STATE ===== */
         .lobby-state {
             flex: 1;
             display: flex;
@@ -448,7 +440,6 @@
         .lobby-state .big-title { font-family: 'Fredoka One', cursive; font-size: 28px; color: rgba(255,255,255,0.04); }
         .lobby-state .big-sub { font-size: 14px; color: rgba(255,255,255,0.03); letter-spacing: 2px; }
 
-        /* ===== MODAL PROFILE KEREN ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -545,7 +536,6 @@
             background: rgba(255,255,255,0.04);
         }
 
-        /* Toggle per sosmed */
         .sosmed-row {
             display: flex;
             align-items: center;
@@ -629,7 +619,6 @@
             box-shadow: 0 4px 40px rgba(59,130,246,0.12);
         }
 
-        /* ===== CONTACT DEVELOPER MODAL ===== */
         .dev-modal .dev-profile {
             display: flex;
             flex-direction: column;
@@ -707,7 +696,6 @@
 
         .dev-modal .dev-back:hover { color: rgba(255,255,255,0.4); }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sidebar { width: 100%; max-height: 50vh; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.02); }
             .app-container { flex-direction: column; }
@@ -735,7 +723,6 @@
 </head>
 <body>
 
-<!-- ===== MODAL PROFILE ===== -->
 <div class="modal-overlay" id="profileModal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeProfileModal()">✕</button>
@@ -778,7 +765,6 @@
     </div>
 </div>
 
-<!-- ===== CONTACT DEVELOPER MODAL ===== -->
 <div class="modal-overlay" id="devModal">
     <div class="modal-content dev-modal">
         <button class="modal-close" onclick="closeDevModal()">✕</button>
@@ -804,10 +790,8 @@
     </div>
 </div>
 
-<!-- ===== APP ===== -->
 <div class="app-container">
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="brand">DikFaa <small>chat</small></div>
@@ -836,7 +820,6 @@
         <div class="chat-list" id="chatList"></div>
     </div>
 
-    <!-- MAIN CHAT -->
     <div class="chat-main">
         <div class="chat-header">
             <div class="room-info">
@@ -849,7 +832,6 @@
             <button class="action-btn" onclick="showRoomInfo()">ℹ️</button>
         </div>
 
-        <!-- LOBBY (default) -->
         <div class="messages-area" id="messagesArea">
             <div class="lobby-state">
                 <div class="big-icon">💬</div>
@@ -869,7 +851,6 @@
 </div>
 
 <script>
-    // ====== API BACKEND (Vercel Serverless) ======
     const API_URL = '/api/redis';
 
     async function redisRequest(method, key, value = null) {
@@ -890,7 +871,6 @@
         }
     }
 
-    // ====== STATE ======
     let currentUser = null;
     let currentRoom = 'lobby';
     let currentTarget = null;
@@ -931,7 +911,6 @@
         });
     });
 
-    // ====== LOAD USERS ======
     async function loadAllUsers() {
         try {
             const keys = await redisRequest('KEYS', 'user:');
@@ -949,7 +928,6 @@
         } catch (e) { console.error('🔥 Gagal load users:', e); }
     }
 
-    // ====== BUILD CHAT LIST ======
     async function buildChatList() {
         chatList = [];
         chatList.push({ id: 'group', type: 'group', name: 'Group Chat', avatar: '💬', pinned: true, preview: 'Chat grup semua user' });
@@ -965,7 +943,6 @@
         } catch (e) { console.error('🔥 Gagal load private chats:', e); }
     }
 
-    // ====== RENDER CHAT LIST ======
     function renderChatList() {
         const container = document.getElementById('chatList');
         if (chatList.length === 0) {
@@ -990,7 +967,6 @@
         }).join('');
     }
 
-    // ====== SELECT CHAT ======
     function selectChat(type, target) {
         currentRoom = type;
         currentTarget = target || null;
@@ -1012,7 +988,6 @@
         document.getElementById('chatInput').focus();
     }
 
-    // ====== SHOW LOBBY ======
     function showLobby() {
         document.getElementById('roomName').textContent = 'DikFaa';
         document.getElementById('roomStatus').textContent = 'Pilih chat untuk mulai';
@@ -1027,7 +1002,6 @@
         renderChatList();
     }
 
-    // ====== LOAD MESSAGES ======
     async function loadMessages(room, target = null) {
         const key = room === 'group' ? 'messages:group' : `messages:private:${currentUser.username}:${target}`;
         try {
@@ -1037,7 +1011,6 @@
         } catch (e) { console.error('🔥 Gagal load messages:', e); }
     }
 
-    // ====== RENDER MESSAGES ======
     function renderMessages() {
         const area = document.getElementById('messagesArea');
         if (!messages || messages.length === 0) {
@@ -1067,7 +1040,6 @@
         area.scrollTop = area.scrollHeight;
     }
 
-    // ====== SEND MESSAGE ======
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
@@ -1109,7 +1081,6 @@
         renderChatList();
     }
 
-    // ====== HANDLE INPUT ======
     function handleInputKey(e) {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     }
@@ -1144,11 +1115,9 @@
         input.focus();
     }
 
-    // ====== DROPDOWN ======
     function toggleDropdown() { document.getElementById('profileDropdown').classList.toggle('show'); }
     function closeDropdown() { document.getElementById('profileDropdown').classList.remove('show'); }
 
-    // ====== PROFILE MODAL ======
     function openProfileModal() {
         document.getElementById('profileModal').classList.add('active');
         loadProfileData();
@@ -1209,11 +1178,9 @@
         }
     }
 
-    // ====== DEV MODAL ======
     function openDevModal() { document.getElementById('devModal').classList.add('active'); }
     function closeDevModal() { document.getElementById('devModal').classList.remove('active'); }
 
-    // ====== INFO ======
     function showInfo() {
         alert(`✨ DikFaa\n\nChat aplikasi berbasis web dengan teknologi modern.\nDibuat dengan ❤️ untuk komunitas.\n\nVersi: 2.0\n\n✨ Gradien biru-pink ✨`);
     }
@@ -1228,7 +1195,6 @@
         }
     }
 
-    // ====== LOGOUT ======
     function logout() {
         if (confirm(`Yakin mau keluar dari DikFaa?`)) {
             localStorage.removeItem('chatUser');
@@ -1236,7 +1202,6 @@
         }
     }
 
-    // ====== POLLING ======
     function startPolling() {
         if (pollingInterval) clearInterval(pollingInterval);
         pollingInterval = setInterval(async () => {
