@@ -1,0 +1,15 @@
+{
+  "name": "dikfaa-chat",
+  "version": "1.0.0",
+  "description": "DikFaa Chat App",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "redis": "^4.6.13"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
