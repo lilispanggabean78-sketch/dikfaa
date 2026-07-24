@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* Animated gradient background — biru ke pink */
         body::before {
             content: '';
             position: fixed;
@@ -46,7 +45,6 @@
             75% { transform: translate(1%, -1%) rotate(1deg); }
         }
 
-        /* Floating orbs */
         .orb {
             position: fixed;
             border-radius: 50%;
@@ -88,7 +86,6 @@
             66% { transform: translate(-20px, 30px) scale(0.9); }
         }
 
-        /* Floating particles — warna biru & pink */
         .particle {
             position: fixed;
             width: 3px;
@@ -128,7 +125,6 @@
             overflow: hidden;
         }
 
-        /* Glowing border gradien biru-pink */
         .login-container::before {
             content: '';
             position: absolute;
@@ -338,7 +334,6 @@
             margin: 0 6px;
         }
 
-        /* Loading */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -454,7 +449,6 @@
     </div>
 
     <script>
-        // ====== API BACKEND (Vercel Serverless) ======
         const API_URL = '/api/redis';
 
         async function redisRequest(method, key, value = null) {
@@ -474,7 +468,6 @@
             }
         }
 
-        // ===== PARTICLES =====
         (function createParticles() {
             const container = document.getElementById('particles');
             const colors = ['rgba(59,130,246,0.15)', 'rgba(236,72,153,0.12)', 'rgba(139,92,246,0.1)'];
@@ -491,7 +484,6 @@
             }
         })();
 
-        // ===== LOGIN LOGIC =====
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
         const usernameInput = document.getElementById('usernameInput');
@@ -518,7 +510,6 @@
             }
 
             try {
-                // Cek apakah username sudah dipakai
                 const existing = await redisRequest('GET', `user:${username}`);
                 if (existing && existing.username) {
                     errorMsg.textContent = '⚠️ Username sudah dipakai! Pilih yang lain.';
@@ -526,7 +517,6 @@
                     return;
                 }
 
-                // Simpan user baru
                 const userData = {
                     email: email,
                     username: username,
