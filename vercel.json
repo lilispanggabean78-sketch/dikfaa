@@ -3,6 +3,10 @@
   "name": "dikfaa-chat",
   "builds": [
     {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     }
@@ -21,8 +25,8 @@
       "dest": "/chat.html"
     },
     {
-      "src": "/(.*)\\.html",
-      "dest": "/$1.html"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
