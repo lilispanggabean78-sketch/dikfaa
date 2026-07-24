@@ -13,20 +13,28 @@
   ],
   "routes": [
     {
-      "src": "^/$",
+      "src": "/",
       "dest": "/index.html"
     },
     {
-      "src": "^/login/?$",
+      "src": "/index",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/login",
       "dest": "/login.html"
     },
     {
-      "src": "^/chat/?$",
+      "src": "/chat",
       "dest": "/chat.html"
     },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)\\.html",
+      "dest": "/$1.html"
     },
     {
       "src": "/(.*)",
