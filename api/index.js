@@ -1,5 +1,6 @@
+// 📁 api/index.js
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -9,7 +10,10 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+    return res.status(405).json({ 
+      error: 'Method not allowed. Use POST.',
+      hint: 'Kirim { method, key, value }'
+    });
   }
 
   const { method, key, value } = req.body || {};
@@ -18,7 +22,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Method required (GET, SET, KEYS)' });
   }
 
-  // ==== KONFIGURASI UPSTASH ====
   const UPSTASH_URL = 'https://saving-walleye-172347.upstash.io';
   const UPSTASH_TOKEN = 'gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg';
 
@@ -63,4 +66,4 @@ export default async function handler(req, res) {
       detail: error.message 
     });
   }
-}
+        }
