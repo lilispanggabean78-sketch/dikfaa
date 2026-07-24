@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* ===== ANIMATED BACKGROUND ===== */
         body::before {
             content: '';
             position: fixed;
@@ -46,7 +45,6 @@
             75% { transform: translate(1%, -1%) rotate(1deg); }
         }
 
-        /* ===== FLOATING ORBS ===== */
         .orb {
             position: fixed;
             border-radius: 50%;
@@ -89,7 +87,6 @@
             66% { transform: translate(-30px, 40px) scale(0.9); }
         }
 
-        /* ===== PARTICLES ===== */
         .particle {
             position: fixed;
             border-radius: 50%;
@@ -110,7 +107,6 @@
             }
         }
 
-        /* ===== LOADING CONTAINER ===== */
         .loading-container {
             position: relative;
             z-index: 1;
@@ -133,7 +129,6 @@
             }
         }
 
-        /* ===== LOGO ===== */
         .logo-wrapper {
             position: relative;
             width: 120px;
@@ -203,7 +198,6 @@
             text-shadow: 0 2px 20px rgba(0,0,0,0.2);
         }
 
-        /* ===== BRAND ===== */
         .brand-name {
             font-family: 'Fredoka One', cursive;
             font-size: 42px;
@@ -229,7 +223,6 @@
             margin-top: -6px;
         }
 
-        /* ===== LOADING BAR ===== */
         .loading-bar-wrapper {
             width: 280px;
             margin-top: 10px;
@@ -282,7 +275,6 @@
             transition: all 0.3s;
         }
 
-        /* ===== LOADING TEXT ===== */
         .loading-status {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.04);
@@ -292,7 +284,6 @@
             min-height: 20px;
         }
 
-        /* ===== DOTS ===== */
         .dots {
             display: flex;
             gap: 8px;
@@ -316,7 +307,6 @@
             40% { transform: scale(1); opacity: 0.6; }
         }
 
-        /* ===== FLASH EFFECT SAAT REDIRECT ===== */
         .flash-overlay {
             position: fixed;
             top: 0;
@@ -334,7 +324,6 @@
             opacity: 1;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .logo-wrapper { width: 90px; height: 90px; }
             .logo-circle { width: 90px; height: 90px; }
@@ -349,21 +338,16 @@
 </head>
 <body>
 
-    <!-- Flash Overlay -->
     <div class="flash-overlay" id="flashOverlay"></div>
 
-    <!-- Orbs -->
     <div class="orb"></div>
     <div class="orb"></div>
     <div class="orb"></div>
 
-    <!-- Particles -->
     <div id="particles"></div>
 
-    <!-- Loading Container -->
     <div class="loading-container" id="loadingContainer">
         
-        <!-- Logo -->
         <div class="logo-wrapper">
             <div class="logo-circle">
                 <span class="logo-text">DF</span>
@@ -372,11 +356,9 @@
             <div class="logo-ring"></div>
         </div>
 
-        <!-- Brand -->
         <div class="brand-name">DikFaa</div>
         <div class="brand-sub">DIMENSI PERCAKAPAN</div>
 
-        <!-- Loading Bar -->
         <div class="loading-bar-wrapper">
             <div class="loading-bar-track">
                 <div class="loading-bar-fill" id="progressFill"></div>
@@ -384,10 +366,8 @@
             <div class="loading-percent" id="percentText">0%</div>
         </div>
 
-        <!-- Status Text -->
         <div class="loading-status" id="statusText">✦ Memuat sistem ✦</div>
 
-        <!-- Dots -->
         <div class="dots">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -396,7 +376,6 @@
     </div>
 
     <script>
-        // ===== PARTICLES =====
         (function createParticles() {
             const container = document.getElementById('particles');
             const colors = [
@@ -424,7 +403,6 @@
             }
         })();
 
-        // ===== STATUS TEXT =====
         const statusMessages = [
             '✦ Memuat sistem ✦',
             '✦ Mengaktifkan dimensi ✦',
@@ -432,13 +410,12 @@
             '✦ Hampir selesai ✦'
         ];
 
-        // ===== PROGRESS BAR =====
         const progressFill = document.getElementById('progressFill');
         const percentText = document.getElementById('percentText');
         const statusText = document.getElementById('statusText');
 
         let progress = 0;
-        const duration = 3000; // 3 DETIK
+        const duration = 3000;
         const interval = 50;
         const step = 100 / (duration / interval);
 
@@ -447,7 +424,6 @@
         const progressInterval = setInterval(() => {
             progress += step;
             
-            // Update status text di milestone tertentu
             if (progress >= 25 && statusIndex === 0) {
                 statusIndex = 1;
                 statusText.textContent = statusMessages[1];
@@ -463,13 +439,11 @@
                 progress = 100;
                 clearInterval(progressInterval);
                 
-                // Flash effect
                 const flash = document.getElementById('flashOverlay');
                 flash.classList.add('active');
                 
-                // Redirect setelah flash
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 }, 600);
             }
 
@@ -477,13 +451,12 @@
             percentText.textContent = Math.floor(progress) + '%';
         }, interval);
 
-        // ===== FALLBACK =====
         setTimeout(() => {
             if (progress < 100) {
                 const flash = document.getElementById('flashOverlay');
                 flash.classList.add('active');
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 }, 600);
             }
         }, 3800);
