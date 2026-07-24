@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "name": "dikfaa-chat",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/login.html"
+    },
+    {
+      "src": "/chat",
+      "dest": "/chat.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/404.html"
+    }
+  ]
+}
