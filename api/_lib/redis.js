@@ -1,17 +1,16 @@
 import { createClient } from 'redis';
 
 const client = createClient({
-  url: 'https://saving-walleye-172347.upstash.io',
-  password: 'gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg',
+  url: 'redis://default:gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg@saving-walleye-172347.upstash.io:6379',
   socket: {
     tls: true,
     rejectUnauthorized: false
   }
 });
 
-client.on('error', (err) => console.error('Redis Client Error', err));
+client.on('error', (err) => console.error('Redis Client Error:', err));
 
-// Koneksi otomatis saat di-import
-client.connect().catch(console.error);
+// Koneksi auto pas di-import
+await client.connect();
 
 export default client;
