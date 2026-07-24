@@ -869,10 +869,28 @@
 </div>
 
 <script>
-    const REDIS_URL = "https://saving-walleye-172347.upstash.io";
-    const REDIS_TOKEN = "gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg";
-    const APP_NAME = "DikFaa";
+    // ====== API BACKEND (Vercel Serverless) ======
+    const API_URL = '/api/redis';
 
+    async function redisRequest(method, key, value = null) {
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ method, key, value })
+            });
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+            return await res.json();
+        } catch (err) {
+            console.error('🔥 API Error:', err);
+            alert('⚠️ Gagal terhubung ke server! Coba refresh.');
+            throw err;
+        }
+    }
+
+    // ====== STATE ======
     let currentUser = null;
     let currentRoom = 'lobby';
     let currentTarget = null;
@@ -883,14 +901,13 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
         const saved = localStorage.getItem('chatUser');
-        if (!saved) { window.location.href = 'login.html'; return; }
+        if (!saved) { window.location.href = '/login'; return; }
         currentUser = JSON.parse(saved);
 
         await loadAllUsers();
         await buildChatList();
         renderChatList();
 
-        // Default lobby
         currentRoom = 'lobby';
         showLobby();
 
@@ -909,23 +926,15 @@
             }
         });
 
-        // Bio counter
         document.getElementById('profileBio').addEventListener('input', function() {
             document.getElementById('bioCount').textContent = this.value.length;
         });
     });
 
-    async function redisRequest(method, key, value = null) {
-        const url = `${REDIS_URL}/${key}`;
-        const options = { method, headers: { 'Authorization': `Bearer ${REDIS_TOKEN}`, 'Content-Type': 'application/json' } };
-        if (value !== null) options.body = JSON.stringify(value);
-        const res = await fetch(url, options);
-        return await res.json();
-    }
-
+    // ====== LOAD USERS ======
     async function loadAllUsers() {
         try {
-            const keys = await redisRequest('KEYS', 'user:*');
+            const keys = await redisRequest('KEYS', 'user:');
             const users = [];
             if (keys && Array.isArray(keys)) {
                 for (const key of keys) {
@@ -940,12 +949,13 @@
         } catch (e) { console.error('🔥 Gagal load users:', e); }
     }
 
+    // ====== BUILD CHAT LIST ======
     async function buildChatList() {
         chatList = [];
         chatList.push({ id: 'group', type: 'group', name: 'Group Chat', avatar: '💬', pinned: true, preview: 'Chat grup semua user' });
 
         try {
-            const keys = await redisRequest('KEYS', `messages:private:${currentUser.username}:*`);
+            const keys = await redisRequest('KEYS', `messages:private:${currentUser.username}:`);
             if (keys && Array.isArray(keys)) {
                 const partners = keys.map(k => k.split(':').pop());
                 for (const p of partners) {
@@ -955,6 +965,7 @@
         } catch (e) { console.error('🔥 Gagal load private chats:', e); }
     }
 
+    // ====== RENDER CHAT LIST ======
     function renderChatList() {
         const container = document.getElementById('chatList');
         if (chatList.length === 0) {
@@ -979,6 +990,7 @@
         }).join('');
     }
 
+    // ====== SELECT CHAT ======
     function selectChat(type, target) {
         currentRoom = type;
         currentTarget = target || null;
@@ -1000,6 +1012,7 @@
         document.getElementById('chatInput').focus();
     }
 
+    // ====== SHOW LOBBY ======
     function showLobby() {
         document.getElementById('roomName').textContent = 'DikFaa';
         document.getElementById('roomStatus').textContent = 'Pilih chat untuk mulai';
@@ -1014,6 +1027,7 @@
         renderChatList();
     }
 
+    // ====== LOAD MESSAGES ======
     async function loadMessages(room, target = null) {
         const key = room === 'group' ? 'messages:group' : `messages:private:${currentUser.username}:${target}`;
         try {
@@ -1023,6 +1037,7 @@
         } catch (e) { console.error('🔥 Gagal load messages:', e); }
     }
 
+    // ====== RENDER MESSAGES ======
     function renderMessages() {
         const area = document.getElementById('messagesArea');
         if (!messages || messages.length === 0) {
@@ -1052,6 +1067,7 @@
         area.scrollTop = area.scrollHeight;
     }
 
+    // ====== SEND MESSAGE ======
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
@@ -1077,13 +1093,13 @@
             const otherData = await redisRequest('GET', otherKey);
             let otherMsgs = otherData ? (typeof otherData === 'string' ? JSON.parse(otherData) : otherData) : [];
             otherMsgs.push(msg);
-            await redisRequest('SET', otherKey, JSON.stringify(otherMsgs));
+            await redisRequest('SET', otherKey, otherMsgs);
         }
 
         const current = await redisRequest('GET', key);
         let msgs = current ? (typeof current === 'string' ? JSON.parse(current) : current) : [];
         msgs.push(msg);
-        await redisRequest('SET', key, JSON.stringify(msgs));
+        await redisRequest('SET', key, msgs);
 
         input.value = '';
         input.style.height = 'auto';
@@ -1093,6 +1109,7 @@
         renderChatList();
     }
 
+    // ====== HANDLE INPUT ======
     function handleInputKey(e) {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     }
@@ -1127,11 +1144,11 @@
         input.focus();
     }
 
-    // ===== DROPDOWN =====
+    // ====== DROPDOWN ======
     function toggleDropdown() { document.getElementById('profileDropdown').classList.toggle('show'); }
     function closeDropdown() { document.getElementById('profileDropdown').classList.remove('show'); }
 
-    // ===== PROFILE MODAL =====
+    // ====== PROFILE MODAL ======
     function openProfileModal() {
         document.getElementById('profileModal').classList.add('active');
         loadProfileData();
@@ -1151,7 +1168,6 @@
                 document.getElementById('profileTiktok').value = parsed.sosmed?.tiktok || '';
                 document.getElementById('profileIg').value = parsed.sosmed?.instagram || '';
 
-                // Toggle states
                 const active = parsed.sosmed?.active || {};
                 document.getElementById('toggleTelegram').classList.toggle('active', active.telegram || false);
                 document.getElementById('toggleTiktok').classList.toggle('active', active.tiktok || false);
@@ -1184,7 +1200,7 @@
                 }
             };
 
-            await redisRequest('SET', `user:${currentUser.username}`, JSON.stringify(parsed));
+            await redisRequest('SET', `user:${currentUser.username}`, parsed);
             alert('✅ Profil berhasil disimpan!');
             closeProfileModal();
         } catch (e) {
@@ -1193,13 +1209,13 @@
         }
     }
 
-    // ===== DEV MODAL =====
+    // ====== DEV MODAL ======
     function openDevModal() { document.getElementById('devModal').classList.add('active'); }
     function closeDevModal() { document.getElementById('devModal').classList.remove('active'); }
 
-    // ===== INFO =====
+    // ====== INFO ======
     function showInfo() {
-        alert(`✨ ${APP_NAME}\n\nChat aplikasi berbasis web dengan teknologi modern.\nDibuat dengan ❤️ untuk komunitas.\n\nVersi: 2.0\n\n✨ Gradien biru-pink ✨`);
+        alert(`✨ DikFaa\n\nChat aplikasi berbasis web dengan teknologi modern.\nDibuat dengan ❤️ untuk komunitas.\n\nVersi: 2.0\n\n✨ Gradien biru-pink ✨`);
     }
 
     function showRoomInfo() {
@@ -1212,14 +1228,15 @@
         }
     }
 
+    // ====== LOGOUT ======
     function logout() {
-        if (confirm('Yakin mau keluar dari ${APP_NAME}?')) {
+        if (confirm(`Yakin mau keluar dari DikFaa?`)) {
             localStorage.removeItem('chatUser');
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         }
     }
 
-    // ===== POLLING =====
+    // ====== POLLING ======
     function startPolling() {
         if (pollingInterval) clearInterval(pollingInterval);
         pollingInterval = setInterval(async () => {
