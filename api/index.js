@@ -9,11 +9,16 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ 
-      error: 'Method not allowed. Use POST.',
-      hint: 'Kirim { method, key, value }'
+  // GET — buat test
+  if (req.method === 'GET') {
+    return res.status(200).json({ 
+      status: 'ok', 
+      message: 'DikFaa API is running! Use POST with { method, key, value }' 
     });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
   }
 
   const { method, key, value } = req.body || {};
@@ -66,4 +71,4 @@ export default async function handler(req, res) {
       detail: error.message 
     });
   }
-        }
+}
