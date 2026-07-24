@@ -454,26 +454,27 @@
     </div>
 
     <script>
-        const REDIS_URL = "https://saving-walleye-172347.upstash.io";
-        const REDIS_TOKEN = "gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg";
+        // ====== API BACKEND (Vercel Serverless) ======
+        const API_URL = '/api/redis';
 
         async function redisRequest(method, key, value = null) {
-            const url = `${REDIS_URL}/${key}`;
-            const options = {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${REDIS_TOKEN}`,
-                    'Content-Type': 'application/json'
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ method, key, value })
+                });
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
                 }
-            };
-            if (value !== null) {
-                options.body = JSON.stringify(value);
+                return await res.json();
+            } catch (err) {
+                console.error('🔥 API Error:', err);
+                throw new Error('Gagal terhubung ke server');
             }
-            const res = await fetch(url, options);
-            return await res.json();
         }
 
-        // Particles
+        // ===== PARTICLES =====
         (function createParticles() {
             const container = document.getElementById('particles');
             const colors = ['rgba(59,130,246,0.15)', 'rgba(236,72,153,0.12)', 'rgba(139,92,246,0.1)'];
@@ -490,6 +491,7 @@
             }
         })();
 
+        // ===== LOGIN LOGIC =====
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
         const usernameInput = document.getElementById('usernameInput');
@@ -516,6 +518,7 @@
             }
 
             try {
+                // Cek apakah username sudah dipakai
                 const existing = await redisRequest('GET', `user:${username}`);
                 if (existing && existing.username) {
                     errorMsg.textContent = '⚠️ Username sudah dipakai! Pilih yang lain.';
@@ -523,6 +526,7 @@
                     return;
                 }
 
+                // Simpan user baru
                 const userData = {
                     email: email,
                     username: username,
@@ -536,18 +540,18 @@
                     }
                 };
 
-                await redisRequest('SET', `user:${username}`, JSON.stringify(userData));
+                await redisRequest('SET', `user:${username}`, userData);
                 await redisRequest('SET', `email:${email}`, username);
 
                 loadingOverlay.classList.add('active');
                 localStorage.setItem('chatUser', JSON.stringify({ email, username }));
 
                 setTimeout(() => {
-                    window.location.href = 'chat.html';
+                    window.location.href = '/chat';
                 }, 1800);
 
             } catch (err) {
-                errorMsg.textContent = '⚠️ Gagal koneksi ke server! Coba lagi.';
+                errorMsg.textContent = '⚠️ ' + err.message;
                 errorMsg.classList.add('show');
                 console.error('🔥 Error:', err);
             }
