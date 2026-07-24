@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DikFaa — Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0f;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated gradient background — biru ke pink */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            animation: bgFloat 12s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(2%, -2%) rotate(2deg); }
+            50% { transform: translate(-2%, 2%) rotate(-2deg); }
+            75% { transform: translate(1%, -1%) rotate(1deg); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: orbFloat 15s ease-in-out infinite;
+        }
+
+        .orb:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.08);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: rgba(236, 72, 153, 0.06);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .orb:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            background: rgba(139, 92, 246, 0.06);
+            top: 40%;
+            left: 60%;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Floating particles — warna biru & pink */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            z-index: 0;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 420px;
+            padding: 45px 40px 35px;
+            background: rgba(10, 10, 20, 0.75);
+            backdrop-filter: blur(40px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(59, 130, 246, 0.05) inset,
+                0 0 80px rgba(59, 130, 246, 0.03);
+            animation: slideUp 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        /* Glowing border gradien biru-pink */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: 29px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(236, 72, 153, 0.2), rgba(59, 130, 246, 0.2));
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: borderGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; opacity: 0.3; }
+            50% { background-position: 100% 50%; opacity: 0.8; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-icon {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 2px;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .login-title {
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: 38px;
+            background: linear-gradient(135deg, #3b82f6, #ec4899, #3b82f6);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 3s ease-in-out infinite;
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes gradShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .login-sub {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 13px;
+            font-weight: 400;
+            margin-bottom: 28px;
+            letter-spacing: 4px;
+        }
+
+        .login-sub span {
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            color: #e5e7eb;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.03);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0 20px;
+            font-size: 13px;
+        }
+
+        .login-options label {
+            color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .login-options label input[type="checkbox"] {
+            accent-color: #3b82f6;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .login-options a {
+            color: rgba(59, 130, 246, 0.5);
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .login-options a:hover {
+            color: #3b82f6;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
+            color: #fff;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 50px rgba(59, 130, 246, 0.2);
+        }
+
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg) translateX(-100%);
+            transition: 0.6s;
+        }
+
+        .login-btn:hover::after {
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.08);
+            letter-spacing: 1px;
+        }
+
+        .footer-text strong {
+            background: linear-gradient(135deg, #3b82f6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-text a {
+            color: rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            margin: 0 6px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(30px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader-ring {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid rgba(59, 130, 246, 0.08);
+            border-top-color: #3b82f6;
+            border-bottom-color: #ec4899;
+            animation: spin 0.7s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 5px;
+            animation: pulseText 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 92%;
+                padding: 30px 20px;
+            }
+            .login-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div id="particles"></div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader-ring"></div>
+        <div class="loading-text">MENGONEKSIKAN...</div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-icon">💬</div>
+        <div class="login-title">DikFaa</div>
+        <div class="login-sub">Masuk ke <span>dimensi percakapan</span></div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>📧 Email</label>
+                <input type="email" id="emailInput" placeholder="contoh@email.com" required>
+            </div>
+            <div class="input-group">
+                <label>👤 Username</label>
+                <input type="text" id="usernameInput" placeholder="Nama panggilan" required minlength="3" maxlength="20">
+            </div>
+
+            <div class="login-options">
+                <label>
+                    <input type="checkbox" id="rememberMe"> Ingat saya
+                </label>
+                <a href="#">Lupa password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">🚀 Login Sekarang</button>
+            <div class="error-msg" id="errorMsg">⚠️ Username sudah dipakai atau email tidak valid</div>
+        </form>
+
+        <div class="footer-text">
+            © 2026 <strong>DikFaa</strong> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <script>
+        const REDIS_URL = "https://saving-walleye-172347.upstash.io";
+        const REDIS_TOKEN = "gQAAAAAAAqE7AAIgcDJiMjFhOGZiOGFmODU0YzVlYjhkODZmZmUxOWU1NGEzNg";
+
+        async function redisRequest(method, key, value = null) {
+            const url = `${REDIS_URL}/${key}`;
+            const options = {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${REDIS_TOKEN}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            if (value !== null) {
+                options.body = JSON.stringify(value);
+            }
+            const res = await fetch(url, options);
+            return await res.json();
+        }
+
+        // Particles
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['rgba(59,130,246,0.15)', 'rgba(236,72,153,0.12)', 'rgba(139,92,246,0.1)'];
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.width = (Math.random() * 4 + 1) + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (Math.random() * 25 + 15) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(p);
+            }
+        })();
+
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('emailInput');
+        const usernameInput = document.getElementById('usernameInput');
+        const errorMsg = document.getElementById('errorMsg');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.remove('show');
+
+            const email = emailInput.value.trim();
+            const username = usernameInput.value.trim();
+
+            if (!email || !username) {
+                errorMsg.textContent = '⚠️ Email dan username wajib diisi!';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (username.length < 3 || username.length > 20) {
+                errorMsg.textContent = '⚠️ Username harus 3-20 karakter!';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            try {
+                const existing = await redisRequest('GET', `user:${username}`);
+                if (existing && existing.username) {
+                    errorMsg.textContent = '⚠️ Username sudah dipakai! Pilih yang lain.';
+                    errorMsg.classList.add('show');
+                    return;
+                }
+
+                const userData = {
+                    email: email,
+                    username: username,
+                    foto: '',
+                    bio: '',
+                    sosmed: {
+                        telegram: '',
+                        tiktok: '',
+                        instagram: '',
+                        active: { telegram: false, tiktok: false, instagram: false }
+                    }
+                };
+
+                await redisRequest('SET', `user:${username}`, JSON.stringify(userData));
+                await redisRequest('SET', `email:${email}`, username);
+
+                loadingOverlay.classList.add('active');
+                localStorage.setItem('chatUser', JSON.stringify({ email, username }));
+
+                setTimeout(() => {
+                    window.location.href = 'chat.html';
+                }, 1800);
+
+            } catch (err) {
+                errorMsg.textContent = '⚠️ Gagal koneksi ke server! Coba lagi.';
+                errorMsg.classList.add('show');
+                console.error('🔥 Error:', err);
+            }
+        });
+    </script>
+</body>
+</html>
