@@ -1,7 +1,7 @@
 import client from './_lib/redis.js';
 
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -10,13 +10,23 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const { method, key, value } = req.body || {};
 
+  if (!method) {
+    return res.status(400).json({ error: 'Method required' });
+  }
+
   try {
+    let result;
+
     switch (method) {
       case 'GET':
-        const data = await client.get(key);
-        return res.status(200).json(data ? JSON.parse(data) : null);
+        result = await client.get(key);
+        return res.status(200).json(result ? JSON.parse(result) : null);
 
       case 'SET':
         await client.set(key, JSON.stringify(value));
@@ -31,6 +41,9 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('🔥 Redis Error:', error);
-    return res.status(500).json({ error: 'Gagal terhubung ke database' });
+    return res.status(500).json({ 
+      error: 'Gagal terhubung ke database',
+      detail: error.message 
+    });
   }
 }
