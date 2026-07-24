@@ -6,7 +6,12 @@
     <title>404 — DikFaa</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             min-height: 100vh;
             display: flex;
@@ -15,7 +20,9 @@
             background: #0a0a0f;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            position: relative;
         }
+
         body::before {
             content: '';
             position: fixed;
@@ -29,20 +36,24 @@
             animation: bgFloat 12s ease-in-out infinite;
             z-index: 0;
         }
+
         @keyframes bgFloat {
             0%, 100% { transform: translate(0,0) rotate(0deg); }
             50% { transform: translate(-1%,1%) rotate(-1deg); }
         }
+
         .container {
             position: relative;
             z-index: 1;
             text-align: center;
             animation: fadeInUp 0.8s ease;
         }
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         .code {
             font-family: 'Fredoka One', cursive;
             font-size: 120px;
@@ -50,7 +61,14 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
+            animation: floatIcon 3s ease-in-out infinite;
         }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         .title {
             font-size: 24px;
             color: rgba(255,255,255,0.3);
@@ -58,12 +76,14 @@
             margin: 8px 0;
             letter-spacing: 2px;
         }
+
         .desc {
             font-size: 14px;
             color: rgba(255,255,255,0.08);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             letter-spacing: 1px;
         }
+
         .btn {
             display: inline-block;
             padding: 12px 32px;
@@ -75,18 +95,72 @@
             font-size: 14px;
             transition: all 0.3s;
         }
+
         .btn:hover {
             transform: scale(1.03);
             box-shadow: 0 4px 40px rgba(59,130,246,0.15);
         }
+
+        /* Floating particles kecil */
+        .particle-404 {
+            position: fixed;
+            border-radius: 50%;
+            z-index: 0;
+            animation: floatParticle404 linear infinite;
+        }
+
+        @keyframes floatParticle404 {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .code { font-size: 80px; }
+            .title { font-size: 18px; }
+        }
     </style>
 </head>
 <body>
+
+    <div id="particles404"></div>
+
     <div class="container">
         <div class="code">404</div>
         <div class="title">Halaman Tidak Ditemukan</div>
         <div class="desc">Sepertinya kamu tersesat di dimensi lain</div>
         <a href="/" class="btn">← Kembali ke DikFaa</a>
     </div>
+
+    <script>
+        (function createParticles404() {
+            const container = document.getElementById('particles404');
+            const colors = [
+                'rgba(59,130,246,0.08)',
+                'rgba(236,72,153,0.06)',
+                'rgba(139,92,246,0.05)'
+            ];
+            for (let i = 0; i < 25; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle-404';
+                const size = Math.random() * 4 + 1;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                p.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(p);
+            }
+        })();
+    </script>
+
 </body>
 </html>
