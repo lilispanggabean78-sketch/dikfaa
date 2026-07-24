@@ -449,6 +449,7 @@
     </div>
 
     <script>
+        // ====== API BACKEND — FIX ======
         const API_URL = '/api';
 
         async function redisRequest(method, key, value = null) {
@@ -458,9 +459,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ method, key, value })
                 });
+                
                 if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || `HTTP ${res.status}`);
                 }
+                
                 return await res.json();
             } catch (err) {
                 console.error('🔥 API Error:', err);
@@ -468,6 +472,7 @@
             }
         }
 
+        // ===== PARTICLES =====
         (function createParticles() {
             const container = document.getElementById('particles');
             const colors = ['rgba(59,130,246,0.15)', 'rgba(236,72,153,0.12)', 'rgba(139,92,246,0.1)'];
@@ -484,6 +489,7 @@
             }
         })();
 
+        // ===== LOGIN LOGIC =====
         const form = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
         const usernameInput = document.getElementById('usernameInput');
@@ -510,6 +516,7 @@
             }
 
             try {
+                // Cek apakah username sudah dipakai
                 const existing = await redisRequest('GET', `user:${username}`);
                 if (existing && existing.username) {
                     errorMsg.textContent = '⚠️ Username sudah dipakai! Pilih yang lain.';
@@ -517,6 +524,7 @@
                     return;
                 }
 
+                // Simpan user baru
                 const userData = {
                     email: email,
                     username: username,
